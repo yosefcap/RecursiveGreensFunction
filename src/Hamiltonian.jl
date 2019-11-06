@@ -67,7 +67,7 @@ struct Greens
     Full_Green::Array{Float64,3}
 end
 
-function init_Hamiltonian(H::Hamiltonian,L::int,B::Float64, p_y::Float64;  kwargs...)
+function init_Hamiltonian(H::Hamiltonian,L::Int,B::Float64, p_y::Float64;  kwargs...)
 
     p = HamiltonianParam(; kwargs...)
     Q_cdw=2*pi/p.CDW_period
@@ -78,4 +78,45 @@ function init_Hamiltonian(H::Hamiltonian,L::int,B::Float64, p_y::Float64;  kwarg
         H.Δ_l[c] =  p.PDW_type*2*p.Δ*cos(Q_pdw*(c-0.5))*cos(p_y)
         H.Δ_h[c] =  p.Δ*cos(Q_pdw*c)
     end
+end
+
+function Recursive_Greens_function(H::Hamiltonian,G::Greens,L::Int)
+    h_1 = get_hamiltonian_block(1,1)
+    h_L = get_hamiltonian_block(L,L)
+
+    G.Left_Green[:,:,1] = inv(h_1)
+    G.Right_Green[:,:,L]=inv(h_L)
+    for c in 2:L
+        h_c = get_hamiltonian_block(c,c)
+        h_pm = get_hamiltonian_block(c,c-1)
+        h_mp = get_hamiltonian_block(c-1,c)
+        G.Left_Green[:,:,c] =  inv(h_c - h_pm*G.Left_Green[:,:,c-1]*h_mp)
+
+        h_c = get_hamiltonian_block(L+1-c,L+1-c)
+        v_pm = get_hamiltonian_block(L+2-c,L+1-c)
+        v_mp = get_hamiltonian_block(L+1-c,L+2-c)
+        G.Right_Green[:,:,L+1-c] = inv(h_c - v_mp*G.Right_Green[:,:,L+2-c]*v_pm)
+    end
+
+    h_1 = get_hamiltonian_block(1,1)
+    v_pm = get_hamiltonian_block(2,1)
+    v_mp = get_hamiltonian_block(1,2)
+    G.Full_Green[:,:,c] = inv(h_c - v_mp*G.Right_Green[:,:,2]*v_pm)
+
+    h_L = get_hamiltonian_block(L,L)
+    h_pm = get_hamiltonian_block(L,L-1)
+    h_mp = get_hamiltonian_block(L-1,L)
+
+    G.Full_Green[:,:,c] = inv(h_c - h_pm*G.Left_Green[:,:,L-1]*h_mp)
+
+    for c in 2:(L-1))
+        h_c = get_hamiltonian_block(c,c)
+        h_pm = get_hamiltonian_block(c,c-1)
+        h_mp = get_hamiltonian_block(c-1,c)
+        v_mp = get_hamiltonian_block(c,c+1)
+        v_pm = get_hamiltonian_block(c+1,c)
+
+        G.Full_Green[:,:,c] = inv(h_c - h_pm*G.Left_Green[:,:,c-1]*h_mp - v_mp*G.Right_Green[:,:,c+1]*v_pm)
+    end
+
 end
