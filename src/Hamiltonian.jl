@@ -80,6 +80,8 @@ function init_Hamiltonian(H::Hamiltonian,L::Int,B::Float64, p_y::Float64;  kwarg
     end
 end
 
+
+
 function Recursive_Greens_function(H::Hamiltonian,G::Greens,L::Int)
     h_1 = get_hamiltonian_block(1,1)
     h_L = get_hamiltonian_block(L,L)
