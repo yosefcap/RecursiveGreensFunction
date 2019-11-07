@@ -73,8 +73,8 @@ function init_Hamiltonian(H::Hamiltonian,L::Int,B::Float64, p_y::Float64;  kwarg
     Q_cdw=2*pi/p.CDW_period
     Q_pdw=2*pi/p.PDW_period
     for c in 1:L
-        H.xi[c,1] = -2*p.t*cos(p_y+2*pi*B*c) + 2*p.CDW*cos(Q_cdw*x+ϕ[c]) - p.μ -
-        H.xi[c,2] = -2*p.t*cos(-p_y+2*pi*B*c) + 2*p.CDW*cos(Q_cdw*x+ϕ[c]) - p.μ -
+        H.xi[c,1] = -2*p.t*cos(p_y+2*pi*B*c) + 2*p.CDW*cos(Q_cdw*x+ϕ[c]) - p.μ -im*p.η
+        H.xi[c,2] = -2*p.t*cos(-p_y+2*pi*B*c) + 2*p.CDW*cos(Q_cdw*x+ϕ[c]) - p.μ -im*p.η
         H.Δ_l[c] =  p.PDW_type*2*p.Δ*cos(Q_pdw*(c-0.5))*cos(p_y)
         H.Δ_h[c] =  p.Δ*cos(Q_pdw*c)
     end
