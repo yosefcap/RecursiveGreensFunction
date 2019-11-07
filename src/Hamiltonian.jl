@@ -75,8 +75,8 @@ function init_Hamiltonian(H::Hamiltonian,L::Int,B::Float64, p_y::Float64;  kwarg
     for c in 1:L
         H.xi[c,1] = -2*p.t*cos(p_y+2*pi*B*c) + 2*p.CDW*cos(Q_cdw*x+ϕ[c]) - p.μ -im*p.η
         H.xi[c,2] = -2*p.t*cos(-p_y+2*pi*B*c) + 2*p.CDW*cos(Q_cdw*x+ϕ[c]) - p.μ -im*p.η
-        H.Δ_l[c] =  p.PDW_type*2*p.Δ*cos(Q_pdw*(c-0.5))*cos(p_y)
-        H.Δ_h[c] =  p.Δ*cos(Q_pdw*c)
+        H.Δ_l[c] =  p.PDW_type*2*p.Δ*cos(Q_pdw*c)*cos(p_y)
+        H.Δ_h[c] =  p.Δ*cos(Q_pdw*(c+0.5))
     end
 end
 
@@ -85,7 +85,8 @@ function get_hamiltonian_block(H::Hamiltonian,i::Int,j::Int)
         t = [H.xi[i,1] 0 ; 0 H.xi[i,2]]
         Δ = [ 0 H.Δ_l[c] ; 0 0]
         block = [t Δ ; Δ' -t]
-    elseif 
+    elseif i<j
+        
 end
 
 
