@@ -86,7 +86,14 @@ function get_hamiltonian_block(H::Hamiltonian,i::Int,j::Int)
         Δ = [ 0 H.Δ_l[c] ; 0 0]
         block = [t Δ ; Δ' -t]
     elseif i<j
-        
+        t = [-1 0 ; 0 -1]
+        Δ = [0 H.Δ_h[i] ; H.Δ_h[i] 0 ]
+        block = [t Δ ; 0 -t]
+    else
+        t = [-1 0 ; 0 -1]
+        Δ = [0 H.Δ_h[i] ; H.Δ_h[i] 0 ]
+        block = [t 0 ; Δ -t]
+    end
 end
 
 
