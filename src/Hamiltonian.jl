@@ -87,7 +87,7 @@ function get_hamiltonian_block(H::Hamiltonian,i::Int,j::Int)
         block = [t Δ ; Δ' -t]
     elseif i<j
         t = [-1 0 ; 0 -1]
-        Δ = [0 H.Δ_h[i] ; H.Δ_h[i] 0 ]
+        Δ = [0 H.Δ_h[   i] ; H.Δ_h[i] 0 ]
         block = [t Δ ; 0 -t]
     else
         t = [-1 0 ; 0 -1]
@@ -135,6 +135,13 @@ function Recursive_Greens_function(H::Hamiltonian,G::Greens,L::Int)
         v_pm = get_hamiltonian_block(H,c+1,c)
 
         G.Full_Green[:,:,c] = inv(h_c - h_pm*G.Left_Green[:,:,c-1]*h_mp - v_mp*G.Right_Green[:,:,c+1]*v_pm)
+    end
+
+end
+function get_DOS(G::Greens,L::Int)
+    DOS::Float64=0.0
+    for c=1:L
+        DOS += G.Full_Green[1,1,c] + G.Full_Green[2,2,c]    
     end
 
 end
