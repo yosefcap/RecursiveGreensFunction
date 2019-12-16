@@ -8,3 +8,4 @@ mc=DQMC_bond(m,beta=1)
 slices=  mc.p.slices
 initialize_stack(mc) # redundant ?!
 build_stack(mc)
+kkk
